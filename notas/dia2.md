@@ -19,6 +19,7 @@ Plugin de GIT
 
 Maquina
     SO Linux
+        Instalé maven
     Contenedor mijenkins********
         proceso Jenkins MAIN - Principal
         Aquí es posible crear hasta 2 EJECUTORES (o 17)
@@ -185,3 +186,6 @@ Inconvenientes de borrar?
     - Tengo que hacer el clonado de un repo de 200Mb ... 5 minutos
         - La proxima vez... si ya existe ese clonado... que se hace? 
             - Se trae solo los cambios.... 2Mb 
+    - Si tengo 1000 clases ... y en compilar aquello... tarda ... tarda !!! que se lleva un rato.
+        - Si han cambiado 5 ficheros... 5 clases... No es lo mismo compilar 5 que 1000... ni parecido
+    - Igual con la compilaciñon de las pruebas.
