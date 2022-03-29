@@ -184,4 +184,4 @@ Inconvenientes de borrar?
 - Tarda más tiempo... cuanto más??? Yo que se? depende
     - Tengo que hacer el clonado de un repo de 200Mb ... 5 minutos
         - La proxima vez... si ya existe ese clonado... que se hace? 
-            - Se trae solo los cambios.... 1Mb 
+            - Se trae solo los cambios.... 2Mb 
