@@ -1,11 +1,32 @@
-
+//declarativa
 pipeline {
     
-    agent any 
+    //agent any;
+    agent {
+        // Esta es la forma casi guay
+        docker {
+            image "ubuntu"
+        }
+        // Forma guay con Kubernetes o Similar:
+        /* 
+        POD: 
+            5 contenedors:
+                Maven
+                Tomcat
+                MySQL
+                Jmeter
+                Selenium
+                Firefox
+                Chrome
+                Egde
+                
+        */
+        
+    } 
     
-    tools {
-      maven 'Mimaven Muy Guay pa compilar version 3.6'
-    }
+//    tools {
+//      maven 'Mimaven Muy Guay pa compilar version 3.6'
+//    }
 
     stages {
         
@@ -14,6 +35,11 @@ pipeline {
                 echo 'Lo que necesite hacer para compilar mi código'
                 sh 'mvn compile'
             }
+            agent {
+                docker {
+                    image "maven:3.6-jdk-8"
+                }
+            } 
         }
         
         stage('2-Pruebas unitarias'){
@@ -21,15 +47,48 @@ pipeline {
                 echo 'Realizar pruebas unitarias'
                 sh 'mvn test'
             }
+            /*
+            script{
+                
+            }
+            */
             post{
                 always {
                     echo 'Guardo el informe de pruebas unitarias'
                     junit 'target/surefire-reports/*.xml'
                 }
             }
+            agent {
+                docker {
+                    image "maven:3.6-jdk-11"
+                }
+            } 
+        }
+        stage('3-Pruebas estáticas de código'){
+            steps {
+                echo 'Llamar a SonarQube'
+                withSonarQubeEnv('sonarqube'){
+                    sh '''
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=proyectoMaven
+                    '''
+
+//                        -Dsonar.host.url=http://34.247.245.25:9000/ \
+//                       -Dsonar.login=09554ba6dfc0282e9c6a13a9c7d2d0ef6070c0d4
+
+                }
+            }
+            post{
+                always {
+                    echo 'Mirar el resultado del QualityGate de SonarQube'
+                    timeout(time: 1, unit: 'HOURS') { 
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
         }
         
-        stage('3-Empaquetar la app para su posible ejecución'){
+        stage('4-Empaquetar la app para su posible ejecución'){
             steps {
                 echo 'Empaqueto'
                 sh 'mvn package'
@@ -43,5 +102,9 @@ pipeline {
         }
         
     }
-
+    post{
+        always {
+                sh 'mvn clean' // Cuando acabe el Pipeline de ejecuatrse: SIEMPRE: Borra la carpeta TARGET
+        }
+    }
 }
